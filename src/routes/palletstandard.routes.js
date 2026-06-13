@@ -5,7 +5,7 @@ import {
   getById,
   getPlants,
   getLines,
-} from "../controllers/palletStandard.controller.js";
+} from "../controllers/palletstandard.controller.js";
 
 const router = express.Router();
 

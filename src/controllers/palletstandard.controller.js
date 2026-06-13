@@ -1,4 +1,4 @@
-import PalletStandard from "../models/PalletStandard.js";
+import PalletStandard from "../models/Palletstandard";
 
 // GET /api/pallet-standards
 const getAll = async (req, res) => {

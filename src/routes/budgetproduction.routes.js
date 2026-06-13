@@ -6,7 +6,7 @@ import {
   getPlants,
   getLines,
   getTypes,
-} from "../controllers/budgetProduction.controller.js";
+} from "../controllers/budgetproduction.controller.js";
 
 const router = express.Router();
 

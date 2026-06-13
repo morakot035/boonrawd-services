@@ -6,7 +6,7 @@ import {
   getPlants,
   getLines,
   getProductTypes,
-} from "../controllers/skuMaster.controller.js";
+} from "../controllers/skumaster.controller.js";
 
 const router = express.Router();
 
