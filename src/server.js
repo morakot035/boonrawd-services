@@ -16,11 +16,7 @@ app.use(express.json());
 
 // ✅ CORS config เดียว ครอบทุก origin + method + header
 const corsOptions = {
-  origin: [
-    "http://localhost:3000",
-    "https://lotto-special-app.vercel.app",
-    "https://lotto-special-services.onrender.com",
-  ],
+  origin: ["http://localhost:3000", "https://boonrawd-portal.vercel.app"],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   exposedHeaders: ["Content-Disposition"],
