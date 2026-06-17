@@ -1,32 +1,26 @@
 import BudgetProduction from "../models/BudgetProduction.js";
 
 // GET /api/budget-production
-// query: plant, line, type, line_category, year, is_forecast
+// query: plant, line, line_category, level, year, is_forecast
 const getAll = async (req, res) => {
   try {
-    const { plant, line, type, line_category, year, is_forecast } = req.query;
+    const { plant, line, line_category, level, year, is_forecast } = req.query;
     const filter = {};
 
     if (plant) filter.plant = plant;
     if (line) filter.line = line;
-    if (type) filter.type = type;
     if (line_category) filter.line_category = line_category;
+    if (level) filter.level = level;
 
-    // กรองตาม year ใน yearly_data array
     if (year) {
-      const yearValue = isNaN(year) ? year : Number(year);
-      filter["yearly_data.year"] = yearValue;
+      filter["yearly_data.year"] = Number(year);
     }
 
-    // กรองเฉพาะ forecast หรือ actual
     if (is_forecast !== undefined) {
       filter["yearly_data.is_forecast"] = is_forecast === "true";
     }
 
-    const data = await BudgetProduction.find(filter).sort({
-      plant: 1,
-      line: 1,
-    });
+    const data = await BudgetProduction.find(filter).sort({ plant: 1, line: 1 });
     res.json({ success: true, count: data.length, data });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -55,10 +49,12 @@ const getPlants = async (_req, res) => {
   }
 };
 
-// GET /api/budget-production/meta/lines?plant=PTB
+// GET /api/budget-production/meta/lines?plant=PTB&line_category=Brew
 const getLines = async (req, res) => {
   try {
-    const filter = req.query.plant ? { plant: req.query.plant } : {};
+    const filter = { level: "line" };
+    if (req.query.plant) filter.plant = req.query.plant;
+    if (req.query.line_category) filter.line_category = req.query.line_category;
     const lines = await BudgetProduction.distinct("line", filter);
     res.json({ success: true, data: lines.sort() });
   } catch (err) {
@@ -66,14 +62,30 @@ const getLines = async (req, res) => {
   }
 };
 
-// GET /api/budget-production/meta/types
-const getTypes = async (_req, res) => {
+// GET /api/budget-production/meta/line-categories?plant=PTB
+const getLineCategories = async (req, res) => {
   try {
-    const types = await BudgetProduction.distinct("type");
-    res.json({ success: true, data: types.sort() });
+    const filter = { level: "line_category" };
+    if (req.query.plant) filter.plant = req.query.plant;
+    const categories = await BudgetProduction.distinct("line_category", filter);
+    res.json({ success: true, data: categories.filter(Boolean).sort() });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-export { getAll, getById, getPlants, getLines, getTypes };
+// GET /api/budget-production/meta/products?plant=PTB&line=Line+1
+const getProducts = async (req, res) => {
+  try {
+    const filter = { level: "product" };
+    if (req.query.plant) filter.plant = req.query.plant;
+    if (req.query.line) filter.line = req.query.line;
+    if (req.query.line_category) filter.line_category = req.query.line_category;
+    const products = await BudgetProduction.distinct("product", filter);
+    res.json({ success: true, data: products.filter(Boolean).sort() });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export { getAll, getById, getPlants, getLines, getLineCategories, getProducts };
