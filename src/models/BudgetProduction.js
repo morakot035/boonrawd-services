@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const yearlyDataSchema = new mongoose.Schema(
   {
-    year: { type: mongoose.Schema.Types.Mixed }, // number หรือ "2026_forecast"
+    year: { type: Number, required: true },
     is_forecast: { type: Boolean, default: false },
     production_ml: { type: Number, default: null },
     capacity_ml: { type: Number, default: null },
@@ -14,11 +14,15 @@ const yearlyDataSchema = new mongoose.Schema(
 const budgetProductionSchema = new mongoose.Schema(
   {
     _id: { type: String },
+    level: {
+      type: String,
+      required: true,
+      enum: ["plant", "line_category", "line", "product"],
+    },
     plant: { type: String, required: true },
-    line: { type: String, required: true },
-    product: { type: String },
-    type: { type: String },
-    line_category: { type: String },
+    line_category: { type: String, default: null },
+    line: { type: String, default: null },
+    product: { type: String, default: null },
     yearly_data: [yearlyDataSchema],
     meta: {
       source_file: { type: String },
